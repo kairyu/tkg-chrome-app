@@ -1,0 +1,39 @@
+{
+  "name": "TKG Chrome App",
+  "description": "Chrome App for TMK Keymap Generator.",
+  "version": "0.6",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": [
+        "async.js",
+        "background.js",
+        "dfu-buffer.js",
+        "dfu-device.js",
+        "dfu-programmer.js",
+        "dfu-target.js",
+        "intel-hex.js",
+        "util.js"
+      ]
+    }
+  },
+  "icons": {
+    "16": "tkg-16.png",
+    "48": "tkg-48.png",
+    "128": "tkg-128.png"
+  },
+  "permissions": [
+    "usb", {
+      "usbDevices": [
+        { "vendorId": 1003, "productId": 12276 },
+        { "vendorId": 1003, "productId": 12282 }
+      ]
+    }
+  ],
+  "externally_connectable": {
+    "matches": [
+      "*://tkg.io/*",
+      "*://*.tkg.io/*"
+    ]
+  }
+}
