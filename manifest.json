@@ -1,7 +1,7 @@
 {
   "name": "TKG Chrome App",
   "description": "Chrome App for TMK Keymap Generator.",
-  "version": "0.6",
+  "version": "0.7",
   "manifest_version": 2,
   "app": {
     "background": {

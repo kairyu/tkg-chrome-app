@@ -62,7 +62,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     break;
                 case 'get':
                     if (_programmer && _programmer.target) {
-                        _programmer.get({ 'name': 'bootloader' }, function(error, result) {
+                        _programmer.get({ 'name': response.name }, function(error, result) {
                             if (!error) {
                                 response.response = result.data;
                             }
@@ -135,9 +135,15 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
     console.log('message received');
     console.log(request);
-    if (request.request == 'test') {
-        console.log(request.request);
-        sendResponse({ 'request': 'test', 'response': 'ok', 'appId': request.appId });
+    switch (request.request) {
+        case 'test':
+            sendResponse({
+                'request': 'test',
+                'response': 'ok',
+                'appId': request.appId,
+                'version': chrome.runtime.getManifest().version
+            });
+            break;
     }
 });
 
