@@ -12,6 +12,7 @@
         "dfu-device.js",
         "dfu-programmer.js",
         "dfu-target.js",
+        "hid-programmer.js",
         "intel-hex.js",
         "util.js"
       ]
@@ -23,12 +24,15 @@
     "128": "tkg-128.png"
   },
   "permissions": [
-    "usb", {
+    "hid", "usb", {
       "usbDevices": [
         { "vendorId": 1003, "productId": 8295 },
         { "vendorId": 1003, "productId": 12270 },
         { "vendorId": 1003, "productId": 12276 },
-        { "vendorId": 1003, "productId": 12282 }
+        { "vendorId": 1003, "productId": 12282 },
+        { "vendorId": 4617, "productId": 8999 },
+        { "vendorId": 4617, "productId": 9000 },
+        { "vendorId": 5824, "productId": 1144 }
       ]
     }
   ],

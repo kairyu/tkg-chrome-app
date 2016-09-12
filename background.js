@@ -48,6 +48,17 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                                 response.error = 'Target not supported';
                             }
                             break;
+                        case 'HID':
+                            _programmer = new HidProgrammer();
+                            var target = msg.target || {};
+                            _programmer.setTarget(target);
+                            if (_programmer.isInitialized()) {
+                                response.response = 'ok';
+                            }
+                            else {
+                                response.error = 'Target not supported';
+                            }
+                            break;
                         default:
                             _programmer = null;
                             response.error = 'Bootloader not supported';
@@ -107,7 +118,14 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     if (_programmer && _programmer.isInitialized()) {
                         async.waterfall([
                             async.apply(_programmer.erase.bind(_programmer), {}),
-                            async.apply(_programmer.flash.bind(_programmer), { 'hex': msg.hex, 'progress': onUpdateProgress }),
+                            function(next) {
+                                if ('hex' in msg) {
+                                    _programmer.flash({ 'hex': msg.hex, 'progress': onUpdateProgress }, next);
+                                }
+                                else {
+                                    next(null);
+                                }
+                            },
                             function(next) {
                                 if ('eep' in msg) {
                                     _programmer.flash({ 'hex': msg.eep, 'segment': 'eeprom', 'force': true, 'progress': onUpdateProgress }, next);
