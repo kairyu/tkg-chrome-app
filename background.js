@@ -18,7 +18,6 @@
 'use strict';
 
 var _bootloader = '';
-var _target = '';
 var _device = '';
 var _programmer = null;
 
@@ -40,9 +39,9 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     switch (_bootloader) {
                         case 'DFU':
                             _programmer = new DfuProgrammer();
-                            _target = msg.target || '';
-                            _programmer.setTarget({ 'name': _target });
-                            if (_programmer.target) {
+                            var target = msg.target || '';
+                            _programmer.setTarget({ 'name': target });
+                            if (_programmer.isInitialized()) {
                                 response.response = 'ok';
                             }
                             else {
@@ -61,10 +60,15 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     port.postMessage(response);
                     break;
                 case 'get':
-                    if (_programmer && _programmer.target) {
-                        _programmer.get({ 'name': response.name }, function(error, result) {
+                    if (_programmer && _programmer.isInitialized()) {
+                        _programmer.get({ 'name': msg.name }, function(error, result) {
                             if (!error) {
-                                response.response = result.data;
+                                if (result) {
+                                    response.response = result.data || '';
+                                }
+                                else {
+                                    response.response = '';
+                                }
                             }
                             else {
                                 response.error = error.message;
@@ -74,7 +78,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     }
                     break;
                 case 'erase':
-                    if (_programmer && _programmer.target) {
+                    if (_programmer && _programmer.isInitialized()) {
                         _programmer.erase({}, function(error) {
                             if (!error) {
                                 response.response = 'ok';
@@ -87,7 +91,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     }
                     break;
                 case 'flash':
-                    if (_programmer && _programmer.target) {
+                    if (_programmer && _programmer.isInitialized()) {
                         _programmer.flash({ 'hex': msg.hex }, function(error) {
                             if (!error) {
                                 response.response = 'ok';
@@ -100,7 +104,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     }
                     break;
                 case 'reflash':
-                    if (_programmer && _programmer.target) {
+                    if (_programmer && _programmer.isInitialized()) {
                         async.waterfall([
                             async.apply(_programmer.erase.bind(_programmer), {}),
                             async.apply(_programmer.flash.bind(_programmer), { 'hex': msg.hex, 'progress': onUpdateProgress }),
@@ -148,7 +152,7 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
 });
 
 function detectDevice() {
-    if (_programmer && _programmer.target) {
+    if (_programmer && _programmer.isInitialized()) {
         _programmer.findDevice({}, function(device) {
             _device = device;
         });

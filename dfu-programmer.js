@@ -22,6 +22,9 @@ function DfuProgrammer() {
 }
 DfuProgrammer.prototype = {
     constructor: DfuProgrammer,
+    isInitialized: function() {
+        return this.target != null;
+    },
     setTarget: function(options) {
         var name = options.name || '';
         this.target = new DfuTarget(name);

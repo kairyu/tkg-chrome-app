@@ -125,7 +125,9 @@ DfuDevice.prototype = {
         var vendorId = options.vendorId || 0;
         var productId = options.productId || 0;
         var callback = (typeof callback === 'function') ? callback : function() {};
+        //console.log(vendorId + ',' + productId);
         chrome.usb.getDevices({ 'vendorId': vendorId, 'productId': productId }, function(devices) {
+            //console.log(device);
             if (devices && devices.length) {
                 var device = devices[0];
                 callback.call(self, device.productName);
