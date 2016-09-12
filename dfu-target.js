@@ -61,7 +61,7 @@ DfuTarget.prototype = {
             'bootloaderSize':       0x1000,
             'bootloaderAtHighMem':  true,
             'flashPageSize':        128,
-            'initialAbort':          true,
+            'initialAbort':         true,
             'honorInterfaceClass':  false,
             'eepromPageSize':       128,
             'eepromMemorySize':     0x0400
@@ -74,10 +74,23 @@ DfuTarget.prototype = {
             'bootloaderSize':       0x1000,
             'bootloaderAtHighMem':  true,
             'flashPageSize':        128,
-            'initialAbort':          true,
+            'initialAbort':         true,
             'honorInterfaceClass':  false,
             'eepromPageSize':       128,
             'eepromMemorySize':     0x0200
+        },
+        'atmega32u2': {
+            'deviceType':           'AVR',
+            'vendorId':             0x03EB,
+            'chipId':               0x2FF0,
+            'memorySize':           0x8000,
+            'bootloaderSize':       0x1000,
+            'bootloaderAtHighMem':  true,
+            'flashPageSize':        128,
+            'initialAbort':         true,
+            'honorInterfaceClass':  false,
+            'eepromPageSize':       128,
+            'eepromMemorySize':     0x0400
         }
     },
 };

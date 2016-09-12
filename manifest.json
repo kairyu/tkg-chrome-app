@@ -25,6 +25,8 @@
   "permissions": [
     "usb", {
       "usbDevices": [
+        { "vendorId": 1003, "productId": 8295 },
+        { "vendorId": 1003, "productId": 12270 },
         { "vendorId": 1003, "productId": 12276 },
         { "vendorId": 1003, "productId": 12282 }
       ]
