@@ -20,13 +20,14 @@
 var _bootloader = '';
 var _device = '';
 var _programmer = null;
+var _busy = false;
 
 chrome.app.runtime.onLaunched.addListener(function() {
     window.open('http://tkg.io');
 });
 
 chrome.runtime.onConnectExternal.addListener(function(port) {
-    console.log('connected');
+    console.log('connected with page');
     port.onMessage.addListener(function(msg) {
         if (msg.request != 'device') {
             console.log(msg);
@@ -72,6 +73,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                     break;
                 case 'get':
                     if (_programmer && _programmer.isInitialized()) {
+                        _busy = true;
                         _programmer.get({ 'name': msg.name }, function(error, result) {
                             if (!error) {
                                 if (result) {
@@ -85,11 +87,13 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                                 response.error = error.message;
                             }
                             port.postMessage(response);
+                            _busy = false;
                         });
                     }
                     break;
                 case 'erase':
                     if (_programmer && _programmer.isInitialized()) {
+                        _busy = true;
                         _programmer.erase({}, function(error) {
                             if (!error) {
                                 response.response = 'ok';
@@ -98,11 +102,13 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                                 response.error = error.message;
                             }
                             port.postMessage(response);
+                            _busy = false;
                         });
                     }
                     break;
                 case 'flash':
                     if (_programmer && _programmer.isInitialized()) {
+                        _busy = true;
                         _programmer.flash({ 'hex': msg.hex }, function(error) {
                             if (!error) {
                                 response.response = 'ok';
@@ -111,11 +117,13 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                                 response.error = error.message;
                             }
                             port.postMessage(response);
+                            _busy = false;
                         });
                     }
                     break;
                 case 'reflash':
                     if (_programmer && _programmer.isInitialized()) {
+                        _busy = true;
                         async.waterfall([
                             async.apply(_programmer.erase.bind(_programmer), {}),
                             function(next) {
@@ -143,6 +151,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
                                 response.error = error.message;
                             }
                             port.postMessage(response);
+                            _busy = false;
                         });
                     }
                     break;
@@ -170,13 +179,16 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
 });
 
 function detectDevice() {
-    if (_programmer && _programmer.isInitialized()) {
-        _programmer.findDevice({}, function(device) {
-            _device = device;
-        });
-    }
-    else {
-        _device = null;
+    if (!_busy) {
+        if (_programmer && _programmer.isInitialized()) {
+            _programmer.findDevice({}, function(device) {
+                _device = device;
+                // console.log(device);
+            });
+        }
+        else {
+            _device = null;
+        }
     }
     setTimeout(detectDevice, 1000);
 }
