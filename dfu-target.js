@@ -69,7 +69,7 @@ DfuTarget.prototype = {
         'atmega16u2': {
             'deviceType':           'AVR',
             'vendorId':             0x03EB,
-            'chipId':               0x2FFA,
+            'chipId':               0x2FEF,
             'memorySize':           0x4000,
             'bootloaderSize':       0x1000,
             'bootloaderAtHighMem':  true,
